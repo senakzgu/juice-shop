@@ -1,25 +1,52 @@
-name: Build Juice Shop Docker Image
+name: Build and Run Juice Shop with Docker and Generate SBOM
 
 on:
   push:
     branches:
-      - main  # veya master, hangi branch kullanıyorsan
+      - master
   pull_request:
+    branches:
+      - master
+  workflow_dispatch:
 
 jobs:
-  build:
+  build-and-run:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repo
+    - name: Checkout repository
       uses: actions/checkout@v4
 
-    - name: Set up Docker
+    - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
-    - name: Build Docker Image
-      uses: docker/build-push-action@v5
+    - name: Build Docker image
+      run: |
+        docker build -t juice-shop .
+
+    - name: Run Juice Shop container
+      run: |
+        docker run -d -p 3000:3000 --name juice-shop-container juice-shop
+
+    - name: Check if Juice Shop is running
+      run: |
+        sleep 10
+        curl --fail http://localhost:3000 || exit 1
+
+    - name: Install Syft
+      run: |
+        curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+    - name: Generate SBOM as JSON with Syft
+      run: |
+        syft juice-shop -o json > sbom.json
+
+    - name: Display SBOM JSON output
+      run: |
+        cat sbom.json
+
+    - name: Upload SBOM artifact
+      uses: actions/upload-artifact@v4
       with:
-        context: .
-        push: false   # Eğer sadece build istiyorsan false, registry'ye atmak istersen true yapacağız.
-        tags: juice-shop:github-action
+        name: sbom-json
+        path: sbom.json
