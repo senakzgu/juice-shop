@@ -50,3 +50,17 @@ jobs:
       with:
         name: sbom-json
         path: sbom.json
+
+    - name: Install Semgrep
+      run: |
+        pip install semgrep
+
+    - name: Run Semgrep Scan
+      run: |
+        semgrep --config auto --json --output semgrep-results.json || true
+
+    - name: Upload Semgrep Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: semgrep-results
+        path: semgrep-results.json
