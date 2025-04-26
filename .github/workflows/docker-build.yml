@@ -65,15 +65,9 @@ jobs:
         name: semgrep-sarif-results
         path: semgrep-results.sarif
 
-    - name: Install Gitleaks
+    - name: Run Gitleaks Scan Using Docker Image
       run: |
-        curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.0.4/gitleaks-linux-amd64 -o /usr/local/bin/gitleaks
-        chmod +x /usr/local/bin/gitleaks
-        gitleaks --version  # Gitleaks sürümünü kontrol et
-
-    - name: Run Gitleaks Scan
-      run: |
-        gitleaks detect --source . --report-format json --report-path gitleaks-results.json
+        docker run --rm -v $(pwd):/project --workdir /project zricethezav/gitleaks:latest detect --source . --report-format json --report-path gitleaks-results.json
       continue-on-error: true  # Hata durumunda bile pipeline devam edecek
 
     - name: Upload Gitleaks Results
