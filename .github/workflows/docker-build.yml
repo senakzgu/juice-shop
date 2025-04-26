@@ -76,6 +76,9 @@ jobs:
         name: gitleaks-results
         path: gitleaks-results.json
 
-- name: Dummy Deploy (Simulated Deployment)
+    # Dummy Deploy Adımı
+    - name: Dummy Deploy (Simulated Deployment)
       run: |
-        echo "HALLETTİK HOCAM"
+        echo "Simulated deployment - no actual deployment happening"
+        # Burada, herhangi bir gerçek dağıtım yapmadan süreci taklit ediyoruz
+        echo "Dummy deploy completed successfully"
