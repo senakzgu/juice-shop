@@ -1,4 +1,4 @@
-name: Build and Run Juice Shop with Docker and Generate SBOM
+name: Build and Run Juice Shop with Docker, Generate SBOM, SAST, and Gitleaks
 
 on:
   push:
@@ -64,3 +64,18 @@ jobs:
       with:
         name: semgrep-sarif-results
         path: semgrep-results.sarif
+
+    - name: Install Gitleaks
+      run: |
+        curl -sSL https://github.com/zricethezav/gitleaks/releases/download/v8.0.4/gitleaks-linux-amd64 -o /usr/local/bin/gitleaks
+        chmod +x /usr/local/bin/gitleaks
+
+    - name: Run Gitleaks Scan
+      run: |
+        gitleaks detect --source . --report-format json --report-path gitleaks-results.json
+
+    - name: Upload Gitleaks Results
+      uses: actions/upload-artifact@v4
+      with:
+        name: gitleaks-results
+        path: gitleaks-results.json
