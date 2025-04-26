@@ -1,0 +1,25 @@
+name: Build Juice Shop Docker Image
+
+on:
+  push:
+    branches:
+      - main  # veya master, hangi branch kullanıyorsan
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repo
+      uses: actions/checkout@v4
+
+    - name: Set up Docker
+      uses: docker/setup-buildx-action@v3
+
+    - name: Build Docker Image
+      uses: docker/build-push-action@v5
+      with:
+        context: .
+        push: false   # Eğer sadece build istiyorsan false, registry'ye atmak istersen true yapacağız.
+        tags: juice-shop:github-action
