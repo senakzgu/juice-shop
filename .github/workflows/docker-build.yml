@@ -55,12 +55,12 @@ jobs:
       run: |
         pip install semgrep
 
-    - name: Run Semgrep Scan
+    - name: Run Semgrep Scan (SARIF)
       run: |
-        semgrep --config auto --json --output semgrep-results.json || true
+        semgrep --config auto --sarif --output semgrep-results.sarif
 
-    - name: Upload Semgrep Results
+    - name: Upload Semgrep Results (SARIF)
       uses: actions/upload-artifact@v4
       with:
-        name: semgrep-results
-        path: semgrep-results.json
+        name: semgrep-sarif-results
+        path: semgrep-results.sarif
