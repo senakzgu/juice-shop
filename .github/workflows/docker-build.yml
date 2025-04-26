@@ -75,3 +75,7 @@ jobs:
       with:
         name: gitleaks-results
         path: gitleaks-results.json
+
+- name: Dummy Deploy (Simulated Deployment)
+      run: |
+        echo "HALLETTİK HOCAM"
